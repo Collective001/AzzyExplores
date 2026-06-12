@@ -1,0 +1,1301 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Escape to Azazel</title>
+  <meta property="og:title" content="Escape to Azazel">
+  <meta property="og:description" content="Ride beyond. Leave it all behind. A tiny goat runner from Little Boxie World.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #24160d;
+      --wood: #5a351d;
+      --sand: #e7bf78;
+      --paper: #ffe2a3;
+      --cream: #fff2c4;
+      --red: #8f3127;
+      --blue: #123d54;
+      --gold: #d39b45;
+      --sky: #7e8fc1;
+      --shadow: rgba(0, 0, 0, 0.38);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 82% 4%, rgba(255, 190, 105, 0.28), transparent 19rem),
+        radial-gradient(circle at 14% 8%, rgba(126, 143, 193, 0.24), transparent 21rem),
+        linear-gradient(145deg, #20130c 0%, #512d19 46%, #102d3d 100%);
+      color: var(--cream);
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    main {
+      width: min(1080px, 100%);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 10px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 10px;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 3px solid var(--ink);
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(122, 74, 38, 0.96), rgba(74, 40, 21, 0.96)),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0 3px, transparent 3px 18px);
+      box-shadow: 0 7px 0 var(--shadow);
+    }
+
+    h1 {
+      margin: 0;
+      color: #f2d38b;
+      font-size: clamp(1.5rem, 6vw, 3.4rem);
+      line-height: 0.9;
+      text-transform: uppercase;
+      text-shadow: 3px 3px 0 #1a0e08;
+      letter-spacing: 0;
+    }
+
+    .scoreboard {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(74px, auto));
+      gap: 6px;
+    }
+
+    .scorebox {
+      padding: 7px 9px;
+      border: 2px solid var(--ink);
+      border-radius: 6px;
+      background: var(--paper);
+      color: var(--ink);
+      text-align: center;
+      box-shadow: 3px 3px 0 rgba(0,0,0,0.32);
+    }
+
+    .scorebox span {
+      display: block;
+      font: 900 0.66rem/1 Arial, sans-serif;
+      text-transform: uppercase;
+    }
+
+    .scorebox strong {
+      display: block;
+      color: var(--red);
+      font: 900 1.25rem/1 Arial, sans-serif;
+    }
+
+    .game-shell {
+      position: relative;
+      min-height: 520px;
+      overflow: hidden;
+      border: 3px solid var(--ink);
+      border-radius: 8px;
+      background: #0c2635;
+      box-shadow: 0 8px 0 var(--shadow);
+      touch-action: manipulation;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      min-height: 520px;
+      display: block;
+      background: #7e8fc1;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 14px;
+      background: rgba(21, 12, 6, 0.44);
+    }
+
+    .panel {
+      width: min(620px, 100%);
+      border: 3px solid var(--ink);
+      border-radius: 8px;
+      overflow: hidden;
+      background: linear-gradient(180deg, #fff0be, #e7bf78);
+      color: var(--ink);
+      box-shadow: 7px 7px 0 rgba(0,0,0,0.32);
+    }
+
+    .panel img {
+      width: 100%;
+      max-height: 270px;
+      object-fit: cover;
+      display: block;
+      border-bottom: 3px solid var(--ink);
+    }
+
+    .panel-copy {
+      padding: 14px;
+      display: grid;
+      gap: 9px;
+    }
+
+    h2 {
+      margin: 0;
+      color: var(--red);
+      font-size: clamp(1.45rem, 6vw, 2.75rem);
+      line-height: 0.92;
+      text-transform: uppercase;
+      text-shadow: 1px 1px 0 #fff6d4;
+    }
+
+    p {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.3;
+    }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    button {
+      min-height: 48px;
+      border: 2px solid var(--ink);
+      border-radius: 6px;
+      background: var(--red);
+      color: #fff3c7;
+      font: 900 0.9rem/1 Arial, sans-serif;
+      text-transform: uppercase;
+      box-shadow: 3px 3px 0 rgba(0,0,0,0.28);
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: var(--blue);
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: minmax(120px, 180px) minmax(120px, 180px) 1fr;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 2px 0;
+    }
+
+    #jumpBtn {
+      min-height: 58px;
+      font-size: 1rem;
+      background: var(--gold);
+      color: var(--ink);
+    }
+
+    .hint {
+      color: var(--cream);
+      font: 800 0.8rem/1.25 Arial, sans-serif;
+      text-transform: uppercase;
+      text-shadow: 1px 1px 0 #000;
+    }
+
+    footer {
+      padding: 4px 2px 10px;
+      color: #fff1c0;
+      text-align: center;
+      font: 800 0.75rem/1.25 Arial, sans-serif;
+      text-shadow: 1px 1px 0 #000;
+    }
+
+    @media (max-width: 700px) {
+      main { padding: 8px; }
+      header { grid-template-columns: 1fr; }
+      .scoreboard { grid-template-columns: repeat(2, 1fr); }
+      .game-shell { min-height: 470px; }
+      canvas { min-height: 470px; }
+      .controls { grid-template-columns: 1fr; }
+      .hint { text-align: center; }
+      .button-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Escape to Azazel</h1>
+      <div class="scoreboard">
+        <div class="scorebox"><span>Distance</span><strong id="score">0</strong></div>
+        <div class="scorebox"><span>Best</span><strong id="best">0</strong></div>
+        <div class="scorebox"><span>Level</span><strong id="level">1</strong></div>
+        <div class="scorebox"><span>Tokens</span><strong id="tokens">0/10</strong></div>
+      </div>
+    </header>
+
+    <section class="game-shell" id="gameShell" aria-label="Escape to Azazel runner game">
+      <canvas id="game" width="960" height="540"></canvas>
+      <div class="overlay" id="overlay">
+        <div class="panel">
+          <img src="assets/escape-to-azazel-poster.png" alt="Escape to Azazel ride poster">
+          <div class="panel-copy">
+            <h2>Ride Beyond. Leave It All Behind.</h2>
+            <p>Azzy the Goat has been set free and is now enthusiastically making that everyone else's problem.</p>
+            <p>Tap, click, or press Space to jump. Dodge signs, scrub, fences, and the occasional theological ooze.</p>
+            <div class="button-row">
+              <button id="startBtn" type="button">Begin Escape</button>
+              <button class="secondary" id="howBtn" type="button">How to Play</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="controls">
+      <button id="jumpBtn" type="button">Jump</button>
+      <button class="secondary" id="musicBtn" type="button">Music Off</button>
+      <div class="hint">Collect 10 A tokens to enter Goat Beyond mode and run through anything.</div>
+    </section>
+
+    <footer>Approved by the Covenant Kingdom Priesthood. Emotional baggage must be secured before launch.</footer>
+  </main>
+
+  <script>
+    const canvas = document.querySelector("#game");
+    const ctx = canvas.getContext("2d");
+    const shell = document.querySelector("#gameShell");
+    const overlay = document.querySelector("#overlay");
+    const scoreEl = document.querySelector("#score");
+    const bestEl = document.querySelector("#best");
+    const levelEl = document.querySelector("#level");
+    const tokensEl = document.querySelector("#tokens");
+    const musicBtn = document.querySelector("#musicBtn");
+    const poster = new Image();
+    poster.src = "assets/azazel-character-poster.png";
+    const azzySheet = new Image();
+    azzySheet.src = "assets/azzy-sprite-sheet.png";
+    const scenerySheet = new Image();
+    scenerySheet.src = "assets/azazel-scenery-sheet.png";
+    const oozeSheet = new Image();
+    oozeSheet.src = "assets/boxie-ooze-sheet.png";
+
+    const azzyFrames = {
+      idle: [0, 0, 512, 512],
+      runA: [512, 0, 512, 512],
+      runB: [1024, 0, 512, 512],
+      jump: [0, 512, 512, 512],
+      land: [512, 512, 512, 512],
+      bonked: [1024, 512, 512, 512]
+    };
+
+    const sceneryFrames = {
+      sky: [0, 0, 512, 341],
+      canyon: [512, 0, 512, 341],
+      track: [1024, 0, 512, 341],
+      ledge: [1536, 0, 512, 341],
+      scrub: [0, 341, 512, 341],
+      tree: [512, 341, 512, 341],
+      signBack: [1024, 341, 512, 341],
+      signBeyond: [1536, 341, 512, 341],
+      fence: [0, 682, 512, 342],
+      eagle: [512, 682, 512, 342],
+      token: [1024, 682, 512, 342],
+      levelUp: [1536, 682, 512, 342]
+    };
+
+    const oozeFrames = {
+      small: [0, 341, 512, 341],
+      medium: [512, 341, 512, 341],
+      fast: [1024, 341, 512, 341],
+      boss: [0, 682, 512, 342]
+    };
+
+    const levels = [
+      { name: "Launch Canyon", at: 0, speed: 360 },
+      { name: "Signage Gulch", at: 450, speed: 430 },
+      { name: "Ooze Ravine", at: 1000, speed: 500 },
+      { name: "The Wild Beyond", at: 1700, speed: 575 },
+      { name: "Freedom Summit", at: 2600, speed: 650 }
+    ];
+
+    const bestKey = "escape-to-azazel-best";
+    const state = {
+      mode: "title",
+      score: 0,
+      best: Number(localStorage.getItem(bestKey) || 0),
+      level: 1,
+      tokens: 0,
+      invincibleTimer: 0,
+      levelBannerTimer: 0,
+      showHitboxes: false,
+      speed: 360,
+      ground: 0,
+      lastTime: 0,
+      spawnTimer: 0,
+      cloudTimer: 0,
+      messageTimer: 0,
+      dust: [],
+      clouds: [],
+      obstacles: [],
+      pickups: [],
+      messages: [],
+      goat: {
+        x: 135,
+        y: 0,
+        vy: 0,
+        w: 118,
+        h: 108,
+        grounded: true,
+        jumps: 0,
+        blink: 0
+      }
+    };
+
+    bestEl.textContent = state.best;
+    let audioCtx = null;
+    let musicTimer = null;
+    let musicOn = false;
+    let musicStep = 0;
+
+    function playTone(freq, start, duration, type = "square", gainValue = 0.035) {
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, start);
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(gainValue, start + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+      osc.connect(gain).connect(audioCtx.destination);
+      osc.start(start);
+      osc.stop(start + duration + 0.03);
+    }
+
+    function musicTick() {
+      if (!audioCtx || !musicOn) return;
+      const now = audioCtx.currentTime;
+      const melody = [392, 494, 587, 494, 659, 587, 494, 440];
+      const bass = [98, 98, 147, 147, 130, 130, 110, 110];
+      playTone(melody[musicStep % melody.length], now, 0.12, "square", state.invincibleTimer > 0 ? 0.055 : 0.036);
+      if (musicStep % 2 === 0) playTone(bass[musicStep % bass.length], now, 0.18, "triangle", 0.032);
+      if (state.invincibleTimer > 0) playTone(melody[(musicStep + 2) % melody.length] * 1.5, now + 0.07, 0.08, "square", 0.028);
+      musicStep += 1;
+    }
+
+    async function toggleMusic() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === "suspended") await audioCtx.resume();
+      musicOn = !musicOn;
+      musicBtn.textContent = musicOn ? "Music On" : "Music Off";
+      if (musicOn) {
+        musicTick();
+        musicTimer = window.setInterval(musicTick, 185);
+      } else {
+        window.clearInterval(musicTimer);
+        musicTimer = null;
+      }
+    }
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      const scale = window.devicePixelRatio || 1;
+      canvas.width = Math.floor(rect.width * scale);
+      canvas.height = Math.floor(rect.height * scale);
+      ctx.setTransform(scale, 0, 0, scale, 0, 0);
+      state.ground = rect.height * 0.78;
+      if (state.mode !== "playing") state.goat.y = state.ground - state.goat.h;
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+
+    function view() {
+      const rect = canvas.getBoundingClientRect();
+      return { w: rect.width, h: rect.height };
+    }
+
+    function reset() {
+      const { h } = view();
+      state.mode = "playing";
+      state.score = 0;
+      state.level = 1;
+      state.tokens = 0;
+      state.invincibleTimer = 0;
+      state.levelBannerTimer = 0;
+      state.speed = 360;
+      state.spawnTimer = 900;
+      state.cloudTimer = 0;
+      state.messageTimer = 0;
+      state.obstacles = [];
+      state.pickups = [];
+      state.messages = [];
+      state.dust = [];
+      state.clouds = [];
+      state.ground = h * 0.78;
+      Object.assign(state.goat, {
+        x: 135,
+        y: state.ground - state.goat.h,
+        vy: 0,
+        grounded: true,
+        jumps: 0,
+        blink: 0
+      });
+      overlay.style.display = "none";
+      updateHud();
+    }
+
+    function updateHud() {
+      scoreEl.textContent = Math.floor(state.score);
+      bestEl.textContent = state.best;
+      levelEl.textContent = state.level;
+      tokensEl.textContent = state.invincibleTimer > 0 ? "GO!" : `${state.tokens}/10`;
+    }
+
+    function showOverlay(title, body, buttonText) {
+      overlay.style.display = "grid";
+      overlay.innerHTML = `
+        <div class="panel">
+          <img src="assets/escape-to-azazel-poster.png" alt="Escape to Azazel ride poster">
+          <div class="panel-copy">
+            <h2>${title}</h2>
+            <p>${body}</p>
+            <p>Distance: ${Math.floor(state.score)}. Best escape: ${state.best}.</p>
+            <div class="button-row">
+              <button id="againBtn" type="button">${buttonText}</button>
+              <button class="secondary" id="howAgainBtn" type="button">How to Play</button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.querySelector("#againBtn").addEventListener("click", reset);
+      document.querySelector("#howAgainBtn").addEventListener("click", showHow);
+    }
+
+    function showHow() {
+      overlay.style.display = "grid";
+      overlay.innerHTML = `
+        <div class="panel">
+          <img src="assets/azazel-character-poster.png" alt="Azzy the Goat poster">
+          <div class="panel-copy">
+            <h2>How to Escape</h2>
+            <p>Azzy runs automatically. Tap, click, press Space, or use the Jump button to leap over obstacles and ooze.</p>
+            <p>You get one extra midair hop. Collect 10 A tokens to trigger Goat Beyond mode, which lets Azzy run through anything for a few glorious seconds.</p>
+            <div class="button-row">
+              <button id="startHowBtn" type="button">Begin Escape</button>
+              <button class="secondary" id="titleBtn" type="button">Back</button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.querySelector("#startHowBtn").addEventListener("click", reset);
+      document.querySelector("#titleBtn").addEventListener("click", showTitle);
+    }
+
+    function showTitle() {
+      overlay.style.display = "grid";
+      overlay.innerHTML = `
+        <div class="panel">
+          <img src="assets/escape-to-azazel-poster.png" alt="Escape to Azazel ride poster">
+          <div class="panel-copy">
+            <h2>Ride Beyond. Leave It All Behind.</h2>
+            <p>Azzy the Goat has been set free and is now enthusiastically making that everyone else's problem.</p>
+            <p>Tap, click, or press Space to jump. Dodge signs, scrub, fences, and the occasional theological ooze.</p>
+            <div class="button-row">
+              <button id="startTitleBtn" type="button">Begin Escape</button>
+              <button class="secondary" id="howTitleBtn" type="button">How to Play</button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.querySelector("#startTitleBtn").addEventListener("click", reset);
+      document.querySelector("#howTitleBtn").addEventListener("click", showHow);
+    }
+
+    function jump() {
+      if (state.mode !== "playing") {
+        reset();
+        return;
+      }
+      const goat = state.goat;
+      if (goat.grounded || goat.jumps < 2) {
+        goat.vy = goat.grounded ? -760 : -650;
+        goat.grounded = false;
+        goat.jumps += 1;
+        burstDust(goat.x + 18, goat.y + goat.h, 8);
+      }
+    }
+
+    function spawnObstacle() {
+      const { w } = view();
+      const roll = Math.random();
+      let obstacle;
+      if (roll < 0.42) {
+        obstacle = { type: "scrub", x: w + 30, y: state.ground - 46, w: 46, h: 46, color: "#6d6a2e" };
+      } else if (roll < 0.78) {
+        obstacle = { type: "sign", x: w + 30, y: state.ground - 76, w: 54, h: 76, color: "#8f3127" };
+      } else {
+        obstacle = { type: "fence", x: w + 30, y: state.ground - 58, w: 82, h: 58, color: "#5a351d" };
+      }
+      state.obstacles.push(obstacle);
+      if (Math.random() < 0.45) {
+        state.pickups.push({ x: w + 90, y: state.ground - randomBetween(120, 190), r: 14, taken: false, spin: 0 });
+      }
+    }
+
+    function spawnCloud() {
+      const { w, h } = view();
+      state.clouds.push({
+        x: w + 60,
+        y: randomBetween(45, h * 0.38),
+        s: randomBetween(0.5, 1.25),
+        speed: randomBetween(22, 48)
+      });
+    }
+
+    function randomBetween(min, max) {
+      return min + Math.random() * (max - min);
+    }
+
+    function burstDust(x, y, count) {
+      for (let i = 0; i < count; i++) {
+        state.dust.push({
+          x,
+          y,
+          vx: randomBetween(-90, 40),
+          vy: randomBetween(-55, 10),
+          life: randomBetween(280, 520),
+          max: 520,
+          r: randomBetween(3, 8)
+        });
+      }
+    }
+
+    function addMessage(text, x, y) {
+      state.messages.push({ text, x, y, life: 900, max: 900, vy: -35 });
+    }
+
+    function hit(a, b) {
+      const goatBox = goatHitbox(a);
+      const obstacleBox = obstacleHitbox(b);
+
+      return goatBox.x < obstacleBox.x + obstacleBox.w &&
+        goatBox.x + goatBox.w > obstacleBox.x &&
+        goatBox.y < obstacleBox.y + obstacleBox.h &&
+        goatBox.y + goatBox.h > obstacleBox.y;
+    }
+
+    function goatHitbox(a) {
+      return {
+        x: a.x + a.w * 0.26,
+        y: a.y + a.h * 0.30,
+        w: a.w * 0.48,
+        h: a.h * 0.52
+      };
+    }
+
+    function obstacleHitbox(b) {
+      const obstacleBoxes = {
+        scrub: { x: 0.22, y: 0.36, w: 0.56, h: 0.48 },
+        tree: { x: 0.33, y: 0.30, w: 0.34, h: 0.58 },
+        signBack: { x: 0.24, y: 0.32, w: 0.52, h: 0.50 },
+        signBeyond: { x: 0.24, y: 0.32, w: 0.52, h: 0.50 },
+        fence: { x: 0.14, y: 0.38, w: 0.72, h: 0.42 },
+        oozeSmall: { x: 0.20, y: 0.30, w: 0.60, h: 0.52 },
+        oozeMedium: { x: 0.18, y: 0.28, w: 0.64, h: 0.56 },
+        oozeFast: { x: 0.22, y: 0.24, w: 0.58, h: 0.46 }
+      };
+
+      const inset = obstacleBoxes[b.type] || { x: 0.18, y: 0.24, w: 0.64, h: 0.58 };
+      const obstacleBox = {
+        x: b.x + b.w * inset.x,
+        y: b.y + b.h * inset.y,
+        w: b.w * inset.w,
+        h: b.h * inset.h
+      };
+    }
+
+    function crash() {
+      state.mode = "crashed";
+      burstDust(state.goat.x + state.goat.w * 0.5, state.goat.y + state.goat.h, 18);
+      state.best = Math.max(state.best, Math.floor(state.score));
+      localStorage.setItem(bestKey, String(state.best));
+      updateHud();
+      showOverlay("Briefly Recaptured!", "Azzy encountered official signage at speed. The wilderness remains available after a small hoof-based appeal.", "Escape Again");
+    }
+
+    function update(dt) {
+      if (state.mode !== "playing") return;
+      const goat = state.goat;
+      state.score += dt * state.speed * 0.12;
+      state.speed += dt * 7.5;
+      goat.vy += 2100 * dt;
+      goat.y += goat.vy * dt;
+      if (goat.y >= state.ground - goat.h) {
+        goat.y = state.ground - goat.h;
+        goat.vy = 0;
+        if (!goat.grounded) burstDust(goat.x + 20, goat.y + goat.h, 5);
+        goat.grounded = true;
+        goat.jumps = 0;
+      }
+
+      state.spawnTimer -= dt * 1000;
+      if (state.spawnTimer <= 0) {
+        spawnObstacle();
+        state.spawnTimer = Math.max(620, 1420 - state.speed * 0.68) + randomBetween(0, 480);
+      }
+
+      state.cloudTimer -= dt * 1000;
+      if (state.cloudTimer <= 0) {
+        spawnCloud();
+        state.cloudTimer = randomBetween(1100, 2300);
+      }
+
+      state.messageTimer -= dt * 1000;
+      if (state.messageTimer <= 0) {
+        const lines = ["RIDE BEYOND!", "LEAVE IT!", "GOAT MODE!", "SET FREE!", "AZZY WAY!"];
+        addMessage(lines[Math.floor(Math.random() * lines.length)], randomBetween(220, view().w - 80), randomBetween(90, 150));
+        state.messageTimer = randomBetween(3100, 5200);
+      }
+
+      state.obstacles.forEach(item => item.x -= state.speed * dt);
+      state.obstacles = state.obstacles.filter(item => item.x + item.w > -50);
+      state.pickups.forEach(item => {
+        item.x -= state.speed * dt;
+        item.spin += dt * 7;
+        const gx = goat.x + goat.w * 0.55;
+        const gy = goat.y + goat.h * 0.42;
+        if (!item.taken && Math.hypot(gx - item.x, gy - item.y) < item.r + 34) {
+          item.taken = true;
+          state.score += 75;
+          addMessage("FREEDOM TOKEN!", item.x, item.y);
+        }
+      });
+      state.pickups = state.pickups.filter(item => !item.taken && item.x > -40);
+      state.clouds.forEach(item => item.x -= item.speed * dt);
+      state.clouds = state.clouds.filter(item => item.x > -130);
+      state.dust.forEach(item => {
+        item.life -= dt * 1000;
+        item.x += item.vx * dt;
+        item.y += item.vy * dt;
+        item.vy += 130 * dt;
+      });
+      state.dust = state.dust.filter(item => item.life > 0);
+      state.messages.forEach(item => {
+        item.life -= dt * 1000;
+        item.y += item.vy * dt;
+      });
+      state.messages = state.messages.filter(item => item.life > 0);
+
+      for (const item of state.obstacles) {
+        if (hit(goat, item)) {
+          crash();
+          break;
+        }
+      }
+      updateHud();
+    }
+
+    function draw(t) {
+      const { w, h } = view();
+      ctx.clearRect(0, 0, w, h);
+      drawSky(w, h);
+      drawMountains(w, h, t);
+      state.clouds.forEach(drawCloud);
+      drawTrack(w, h, t);
+      state.pickups.forEach(drawToken);
+      state.obstacles.forEach(drawObstacle);
+      drawGoat(state.goat, t);
+      state.dust.forEach(drawDust);
+      state.messages.forEach(drawMessage);
+      drawStatusEffects(w, h);
+      drawHitboxes();
+      if (state.mode !== "playing") {
+        drawIdleScene(t);
+      }
+    }
+
+    function drawSky(w, h) {
+      const g = ctx.createLinearGradient(0, 0, 0, h);
+      g.addColorStop(0, "#9b91c9");
+      g.addColorStop(0.46, "#e5a665");
+      g.addColorStop(1, "#a66035");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = "rgba(255, 231, 156, 0.88)";
+      ctx.beginPath();
+      ctx.arc(w * 0.84, h * 0.18, 38, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function drawMountains(w, h, t) {
+      const scroll = (t * 0.012) % 260;
+      ctx.fillStyle = "#8b4d2b";
+      for (let i = -1; i < 7; i++) {
+        const x = i * 260 - scroll;
+        ctx.beginPath();
+        ctx.moveTo(x, state.ground);
+        ctx.lineTo(x + 105, h * 0.34);
+        ctx.lineTo(x + 210, state.ground);
+        ctx.closePath();
+        ctx.fill();
+      }
+      ctx.fillStyle = "#5b321e";
+      for (let i = -1; i < 8; i++) {
+        const x = i * 210 - (scroll * 1.7) % 210;
+        ctx.fillRect(x, state.ground - 86, 74, 86);
+        ctx.beginPath();
+        ctx.moveTo(x - 16, state.ground - 86);
+        ctx.lineTo(x + 37, state.ground - 155);
+        ctx.lineTo(x + 90, state.ground - 86);
+        ctx.closePath();
+        ctx.fill();
+      }
+    }
+
+    function drawTrack(w, h, t) {
+      ctx.fillStyle = "#382013";
+      ctx.fillRect(0, state.ground, w, h - state.ground);
+      ctx.strokeStyle = "#d39b45";
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.moveTo(0, state.ground + 10);
+      ctx.lineTo(w, state.ground + 10);
+      ctx.stroke();
+      ctx.strokeStyle = "rgba(255, 226, 163, 0.36)";
+      ctx.lineWidth = 3;
+      const offset = (t * 0.25) % 60;
+      for (let x = -60; x < w + 60; x += 60) {
+        ctx.beginPath();
+        ctx.moveTo(x - offset, state.ground + 26);
+        ctx.lineTo(x + 34 - offset, state.ground + 13);
+        ctx.stroke();
+      }
+    }
+
+    function drawCloud(item) {
+      ctx.fillStyle = "rgba(255, 238, 196, 0.72)";
+      ctx.beginPath();
+      ctx.arc(item.x, item.y, 22 * item.s, 0, Math.PI * 2);
+      ctx.arc(item.x + 28 * item.s, item.y + 4 * item.s, 30 * item.s, 0, Math.PI * 2);
+      ctx.arc(item.x + 62 * item.s, item.y, 20 * item.s, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function drawObstacle(item) {
+      ctx.save();
+      if (item.type === "scrub") {
+        ctx.fillStyle = "#4f6f35";
+        ctx.beginPath();
+        ctx.arc(item.x + 15, item.y + 30, 17, 0, Math.PI * 2);
+        ctx.arc(item.x + 30, item.y + 18, 20, 0, Math.PI * 2);
+        ctx.arc(item.x + 42, item.y + 32, 15, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#2f4a23";
+        ctx.fillRect(item.x + 20, item.y + 28, 11, 18);
+      } else if (item.type === "sign") {
+        ctx.fillStyle = "#5a351d";
+        ctx.fillRect(item.x + 23, item.y + 28, 8, 48);
+        ctx.fillStyle = "#ffe2a3";
+        ctx.strokeStyle = "#24160d";
+        ctx.lineWidth = 3;
+        roundedRect(item.x, item.y, 54, 35, 4, true, true);
+        ctx.fillStyle = "#8f3127";
+        ctx.font = "900 11px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("TURN", item.x + 27, item.y + 14);
+        ctx.fillText("BACK", item.x + 27, item.y + 27);
+      } else {
+        ctx.strokeStyle = "#24160d";
+        ctx.lineWidth = 4;
+        ctx.fillStyle = "#8b522c";
+        for (let i = 0; i < 4; i++) ctx.fillRect(item.x + i * 24, item.y + 5, 10, item.h - 5);
+        ctx.beginPath();
+        ctx.moveTo(item.x, item.y + 18);
+        ctx.lineTo(item.x + item.w, item.y + 8);
+        ctx.moveTo(item.x, item.y + 42);
+        ctx.lineTo(item.x + item.w, item.y + 32);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function drawToken(item) {
+      ctx.save();
+      ctx.translate(item.x, item.y);
+      ctx.rotate(item.spin);
+      ctx.fillStyle = "#f2d38b";
+      ctx.strokeStyle = "#24160d";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, item.r * 0.85, item.r, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = "#8f3127";
+      ctx.font = "900 15px Arial";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("A", 0, 1);
+      ctx.restore();
+    }
+
+    function sheetReady(img) {
+      return img.complete && img.naturalWidth > 0;
+    }
+
+    function drawSheet(img, frame, x, y, w, h, alpha = 1, rotation = 0) {
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.translate(x, y);
+      ctx.rotate(rotation);
+      ctx.drawImage(img, frame[0], frame[1], frame[2], frame[3], -w / 2, -h / 2, w, h);
+      ctx.restore();
+    }
+
+    function currentLevelFor(score) {
+      let index = 0;
+      for (let i = 0; i < levels.length; i++) {
+        if (score >= levels[i].at) index = i;
+      }
+      return index + 1;
+    }
+
+    function spawnObstacle() {
+      const { w } = view();
+      const roll = Math.random();
+      const level = state.level;
+      let item;
+      const oozeChance = level >= 3 ? 0.24 + level * 0.035 : 0;
+
+      if (Math.random() < oozeChance) {
+        const fast = level >= 4 && roll > 0.62;
+        const medium = level >= 3 && roll > 0.34;
+        const type = fast ? "oozeFast" : medium ? "oozeMedium" : "oozeSmall";
+        const config = {
+          oozeSmall: { w: 62, h: 46, y: state.ground - 46 },
+          oozeMedium: { w: 78, h: 58, y: state.ground - 58 },
+          oozeFast: { w: 88, h: 42, y: state.ground - 92 }
+        }[type];
+        item = { type, x: w + 34, ...config, bob: Math.random() * Math.PI * 2 };
+      } else if (roll < 0.25) {
+        item = { type: "scrub", x: w + 30, y: state.ground - 66, w: 90, h: 66 };
+      } else if (roll < 0.42) {
+        item = { type: "tree", x: w + 30, y: state.ground - 112, w: 84, h: 112 };
+      } else if (roll < 0.66) {
+        item = { type: "signBack", x: w + 30, y: state.ground - 104, w: 94, h: 104 };
+      } else if (roll < 0.82) {
+        item = { type: "signBeyond", x: w + 30, y: state.ground - 104, w: 96, h: 104 };
+      } else {
+        item = { type: "fence", x: w + 30, y: state.ground - 70, w: 104, h: 70 };
+      }
+
+      state.obstacles.push(item);
+      const tokenChance = state.invincibleTimer > 0 ? 0.15 : 0.58;
+      if (Math.random() < tokenChance) {
+        state.pickups.push({ x: w + randomBetween(90, 180), y: state.ground - randomBetween(135, 220), r: 18, taken: false, spin: 0 });
+      }
+    }
+
+    function drawSky(w, h) {
+      const g = ctx.createLinearGradient(0, 0, 0, h);
+      g.addColorStop(0, "#8d8fc7");
+      g.addColorStop(0.48, "#eba45f");
+      g.addColorStop(1, "#9b5c34");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+      if (sheetReady(scenerySheet)) {
+        const frame = sceneryFrames.sky;
+        for (let x = 0; x < w + 8; x += 360) {
+          drawSheet(scenerySheet, frame, x + 180, h * 0.23, 370, 246, 0.48);
+        }
+      }
+    }
+
+    function drawMountains(w, h, t) {
+      if (!sheetReady(scenerySheet)) return;
+      const scroll = (t * 0.018) % 380;
+      const frame = sceneryFrames.canyon;
+      for (let x = -380; x < w + 420; x += 380) {
+        drawSheet(scenerySheet, frame, x + 190 - scroll, state.ground - 118, 390, 260, 0.92);
+      }
+      const eagleX = w - ((t * 0.045) % (w + 280));
+      drawSheet(scenerySheet, sceneryFrames.eagle, eagleX, 82 + Math.sin(t * 0.002) * 12, 130, 86, 0.72);
+    }
+
+    function drawTrack(w, h, t) {
+      ctx.fillStyle = "#382013";
+      ctx.fillRect(0, state.ground, w, h - state.ground);
+      if (sheetReady(scenerySheet)) {
+        const trackOffset = (t * 0.22) % 220;
+        for (let x = -220; x < w + 250; x += 220) {
+          drawSheet(scenerySheet, sceneryFrames.track, x + 110 - trackOffset, state.ground + 12, 230, 108);
+        }
+        const groundOffset = (t * 0.32) % 170;
+        for (let x = -170; x < w + 210; x += 170) {
+          drawSheet(scenerySheet, sceneryFrames.ledge, x + 85 - groundOffset, state.ground + 54, 180, 118);
+        }
+      }
+    }
+
+    function drawCloud(item) {
+      if (sheetReady(scenerySheet)) {
+        drawSheet(scenerySheet, sceneryFrames.eagle, item.x, item.y, 110 * item.s, 72 * item.s, 0.45);
+        return;
+      }
+      ctx.fillStyle = "rgba(255, 238, 196, 0.72)";
+      ctx.beginPath();
+      ctx.arc(item.x, item.y, 22 * item.s, 0, Math.PI * 2);
+      ctx.arc(item.x + 28 * item.s, item.y + 4 * item.s, 30 * item.s, 0, Math.PI * 2);
+      ctx.arc(item.x + 62 * item.s, item.y, 20 * item.s, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function drawObstacle(item) {
+      if (sheetReady(scenerySheet)) {
+        const map = {
+          scrub: sceneryFrames.scrub,
+          tree: sceneryFrames.tree,
+          signBack: sceneryFrames.signBack,
+          signBeyond: sceneryFrames.signBeyond,
+          fence: sceneryFrames.fence
+        };
+        if (map[item.type]) {
+          drawSheet(scenerySheet, map[item.type], item.x + item.w / 2, item.y + item.h / 2, item.w, item.h);
+          return;
+        }
+      }
+      if (sheetReady(oozeSheet) && item.type.startsWith("ooze")) {
+        const frame = item.type === "oozeFast" ? oozeFrames.fast : item.type === "oozeMedium" ? oozeFrames.medium : oozeFrames.small;
+        const bob = Math.sin(performance.now() * 0.006 + item.bob) * 5;
+        drawSheet(oozeSheet, frame, item.x + item.w / 2, item.y + item.h / 2 + bob, item.w, item.h);
+        return;
+      }
+    }
+
+    function drawToken(item) {
+      if (sheetReady(scenerySheet)) {
+        drawSheet(scenerySheet, sceneryFrames.token, item.x, item.y, 42, 42, 1, item.spin);
+        return;
+      }
+      ctx.save();
+      ctx.translate(item.x, item.y);
+      ctx.rotate(item.spin);
+      ctx.fillStyle = "#f2d38b";
+      ctx.strokeStyle = "#24160d";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, item.r * 0.85, item.r, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = "#8f3127";
+      ctx.font = "900 15px Arial";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("A", 0, 1);
+      ctx.restore();
+    }
+
+    function update(dt) {
+      if (state.mode !== "playing") return;
+      const goat = state.goat;
+      const newLevel = currentLevelFor(state.score);
+      if (newLevel !== state.level) {
+        state.level = newLevel;
+        state.levelBannerTimer = 1700;
+        addMessage(`${levels[newLevel - 1].name}!`, Math.min(view().w * 0.5, 520), 100);
+      }
+
+      const levelBase = levels[state.level - 1].speed;
+      state.speed = Math.min(levelBase + state.score * 0.035, levelBase + 170);
+      state.score += dt * state.speed * 0.12;
+      state.invincibleTimer = Math.max(0, state.invincibleTimer - dt * 1000);
+      state.levelBannerTimer = Math.max(0, state.levelBannerTimer - dt * 1000);
+
+      goat.vy += 2100 * dt;
+      goat.y += goat.vy * dt;
+      if (goat.y >= state.ground - goat.h) {
+        goat.y = state.ground - goat.h;
+        goat.vy = 0;
+        if (!goat.grounded) burstDust(goat.x + 20, goat.y + goat.h, 5);
+        goat.grounded = true;
+        goat.jumps = 0;
+      }
+
+      state.spawnTimer -= dt * 1000;
+      if (state.spawnTimer <= 0) {
+        spawnObstacle();
+        state.spawnTimer = Math.max(520, 1500 - state.level * 135 - state.score * 0.035) + randomBetween(0, 430);
+      }
+
+      state.cloudTimer -= dt * 1000;
+      if (state.cloudTimer <= 0) {
+        spawnCloud();
+        state.cloudTimer = randomBetween(1100, 2300);
+      }
+
+      state.messageTimer -= dt * 1000;
+      if (state.messageTimer <= 0) {
+        const lines = state.invincibleTimer > 0 ? ["GOAT BEYOND!", "UNSTOPPABLE!", "LEAVE ALL OF IT!"] : ["RIDE BEYOND!", "LEAVE IT!", "GOAT MODE!", "SET FREE!", "AZZY WAY!"];
+        addMessage(lines[Math.floor(Math.random() * lines.length)], randomBetween(220, view().w - 80), randomBetween(90, 150));
+        state.messageTimer = randomBetween(3100, 5200);
+      }
+
+      state.obstacles.forEach(item => item.x -= state.speed * dt);
+      state.obstacles = state.obstacles.filter(item => item.x + item.w > -50);
+      state.pickups.forEach(item => {
+        item.x -= state.speed * dt;
+        item.spin += dt * 7;
+        const gx = goat.x + goat.w * 0.55;
+        const gy = goat.y + goat.h * 0.42;
+        if (!item.taken && Math.hypot(gx - item.x, gy - item.y) < item.r + 34) {
+          item.taken = true;
+          state.score += 75;
+          state.tokens += 1;
+          addMessage("FREEDOM TOKEN!", item.x, item.y);
+          if (state.tokens >= 10) {
+            state.tokens = 0;
+            state.invincibleTimer = 6500;
+            burstDust(goat.x + goat.w * 0.5, goat.y + goat.h, 20);
+            addMessage("GOAT BEYOND!", goat.x + 120, goat.y - 12);
+          }
+        }
+      });
+      state.pickups = state.pickups.filter(item => !item.taken && item.x > -40);
+      state.clouds.forEach(item => item.x -= item.speed * dt);
+      state.clouds = state.clouds.filter(item => item.x > -160);
+      state.dust.forEach(item => {
+        item.life -= dt * 1000;
+        item.x += item.vx * dt;
+        item.y += item.vy * dt;
+        item.vy += 130 * dt;
+      });
+      state.dust = state.dust.filter(item => item.life > 0);
+      state.messages.forEach(item => {
+        item.life -= dt * 1000;
+        item.y += item.vy * dt;
+      });
+      state.messages = state.messages.filter(item => item.life > 0);
+
+      for (const item of state.obstacles) {
+        if (hit(goat, item)) {
+          if (state.invincibleTimer > 0) {
+            item.x = -999;
+            state.score += item.type.startsWith("ooze") ? 160 : 90;
+            addMessage(item.type.startsWith("ooze") ? "OOZE DENIED!" : "RAN THROUGH IT!", goat.x + 110, goat.y + 12);
+            burstDust(item.x + item.w * 0.5, item.y + item.h, 8);
+          } else {
+            crash();
+          }
+          break;
+        }
+      }
+      state.obstacles = state.obstacles.filter(item => item.x > -100);
+      updateHud();
+    }
+
+    function drawGoat(goat, t) {
+      if (azzySheet.complete && azzySheet.naturalWidth > 0) {
+        let frame = "idle";
+        if (state.mode === "crashed") frame = "bonked";
+        else if (state.mode === "playing" && !goat.grounded) frame = goat.vy < 0 ? "jump" : "land";
+        else if (state.mode === "playing") frame = Math.floor(t / 115) % 2 === 0 ? "runA" : "runB";
+
+        const s = azzyFrames[frame];
+        const bob = goat.grounded && state.mode === "playing" ? Math.sin(t * 0.018) * 2 : 0;
+        const drawW = goat.w * 1.48;
+        const drawH = goat.h * 1.48;
+        if (state.invincibleTimer > 0) {
+          ctx.save();
+          ctx.globalAlpha = 0.42 + Math.sin(t * 0.02) * 0.14;
+          ctx.fillStyle = "#ffe2a3";
+          ctx.beginPath();
+          ctx.ellipse(goat.x + goat.w * 0.48, goat.y + goat.h * 0.36 + bob, drawW * 0.44, drawH * 0.36, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+        ctx.drawImage(azzySheet, s[0], s[1], s[2], s[3], goat.x - 25, goat.y - 42 + bob, drawW, drawH);
+        return;
+      }
+
+      const bob = goat.grounded ? Math.sin(t * 0.018) * 2 : 0;
+      const x = goat.x;
+      const y = goat.y + bob;
+      ctx.save();
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = "#24160d";
+      ctx.fillStyle = "#f7ead1";
+      roundedRect(x + 6, y + 22, 70, 40, 20, true, true);
+      ctx.fillStyle = "#6e4828";
+      roundedRect(x + 13, y + 55, 14, 23, 6, true, true);
+      roundedRect(x + 51, y + 55, 14, 23, 6, true, true);
+      ctx.fillStyle = "#fff4dc";
+      ctx.beginPath();
+      ctx.ellipse(x + 47, y + 18, 31, 25, -0.08, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = "#f1b9a8";
+      ctx.beginPath();
+      ctx.ellipse(x + 77, y + 18, 16, 9, -0.18, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = "#8b6338";
+      ctx.beginPath();
+      ctx.moveTo(x + 28, y + 0);
+      ctx.quadraticCurveTo(x + 18, y - 28, x + 34, y - 39);
+      ctx.quadraticCurveTo(x + 42, y - 20, x + 38, y + 0);
+      ctx.moveTo(x + 49, y - 1);
+      ctx.quadraticCurveTo(x + 54, y - 28, x + 72, y - 36);
+      ctx.quadraticCurveTo(x + 68, y - 15, x + 58, y + 4);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = "#fff";
+      ctx.beginPath();
+      ctx.arc(x + 54, y + 12, 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = "#26170f";
+      ctx.beginPath();
+      ctx.arc(x + 56, y + 13, 3.2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = "#8f3127";
+      ctx.lineWidth = 3;
+      ctx.fillStyle = "#b84635";
+      ctx.beginPath();
+      ctx.moveTo(x + 24, y + 39);
+      ctx.lineTo(x + 67, y + 38);
+      ctx.lineTo(x + 51, y + 62);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = "#fff2c4";
+      ctx.font = "900 12px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText("AZZY", x + 47, y + 51);
+      ctx.restore();
+    }
+
+    function drawDust(item) {
+      const alpha = Math.max(0, item.life / item.max);
+      ctx.fillStyle = `rgba(231, 191, 120, ${alpha * 0.65})`;
+      ctx.beginPath();
+      ctx.arc(item.x, item.y, item.r * alpha, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function drawMessage(item) {
+      const alpha = Math.max(0, item.life / item.max);
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.font = "900 26px Arial";
+      ctx.textAlign = "center";
+      ctx.lineWidth = 5;
+      ctx.strokeStyle = "#24160d";
+      ctx.fillStyle = "#ffe2a3";
+      ctx.strokeText(item.text, item.x, item.y);
+      ctx.fillText(item.text, item.x, item.y);
+      ctx.restore();
+    }
+
+    function drawStatusEffects(w, h) {
+      if (state.invincibleTimer > 0) {
+        const pct = state.invincibleTimer / 6500;
+        ctx.save();
+        ctx.globalAlpha = 0.72;
+        ctx.strokeStyle = "#ffe2a3";
+        ctx.lineWidth = 5;
+        ctx.setLineDash([12, 10]);
+        ctx.strokeRect(12, 12, w - 24, h - 24);
+        ctx.setLineDash([]);
+        ctx.fillStyle = "rgba(255, 226, 163, 0.92)";
+        ctx.fillRect(18, 18, (w - 36) * pct, 8);
+        ctx.font = "900 21px Arial";
+        ctx.textAlign = "center";
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = "#24160d";
+        ctx.fillStyle = "#ffe2a3";
+        ctx.strokeText("GOAT BEYOND MODE", w / 2, 52);
+        ctx.fillText("GOAT BEYOND MODE", w / 2, 52);
+        ctx.restore();
+      }
+
+      if (state.levelBannerTimer > 0 && sheetReady(scenerySheet)) {
+        const alpha = Math.min(1, state.levelBannerTimer / 450);
+        drawSheet(scenerySheet, sceneryFrames.levelUp, w / 2, h * 0.22, 260, 150, alpha);
+      }
+    }
+
+    function drawHitboxes() {
+      if (!state.showHitboxes) return;
+      ctx.save();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "#00ff99";
+      const goatBox = goatHitbox(state.goat);
+      ctx.strokeRect(goatBox.x, goatBox.y, goatBox.w, goatBox.h);
+      ctx.strokeStyle = "#ffdd33";
+      state.obstacles.forEach(item => {
+        const box = obstacleHitbox(item);
+        ctx.strokeRect(box.x, box.y, box.w, box.h);
+      });
+      ctx.restore();
+    }
+
+    function drawIdleScene(t) {
+      const { w } = view();
+      drawGoat({ ...state.goat, x: Math.min(135, w * 0.22), y: state.ground - state.goat.h, grounded: true }, t);
+    }
+
+    function roundedRect(x, y, w, h, r, fill, stroke) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      if (fill) ctx.fill();
+      if (stroke) ctx.stroke();
+    }
+
+    function loop(t) {
+      const dt = Math.min(0.033, (t - state.lastTime) / 1000 || 0);
+      state.lastTime = t;
+      update(dt);
+      draw(t);
+      requestAnimationFrame(loop);
+    }
+
+    document.querySelector("#startBtn").addEventListener("click", reset);
+    document.querySelector("#howBtn").addEventListener("click", showHow);
+    document.querySelector("#jumpBtn").addEventListener("pointerdown", event => {
+      event.preventDefault();
+      jump();
+    });
+    musicBtn.addEventListener("click", toggleMusic);
+    shell.addEventListener("pointerdown", event => {
+      if (event.target.closest("button")) return;
+      jump();
+    });
+    window.addEventListener("keydown", event => {
+      if (event.code === "Space" || event.code === "ArrowUp") {
+        event.preventDefault();
+        jump();
+      } else if (event.code === "KeyH") {
+        state.showHitboxes = !state.showHitboxes;
+      }
+    });
+
+    resizeCanvas();
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>
